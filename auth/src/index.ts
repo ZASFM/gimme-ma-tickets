@@ -4,7 +4,7 @@ import {json} from 'body-parser';
 const app=express();
 app.use(json());
 
-app.listen(3000,()=>{
+app.listen(3000,()=>{ 
    console.log('auth on 3000');
    
 })
