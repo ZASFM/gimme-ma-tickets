@@ -14,7 +14,7 @@ spec:
     spec: 
       containers: 
         - name: auth
-          image: shafi/auth
+          image: eu.grc.io/noted-robot-231086 /auth
 ---
 apiVersion: v1
 kind: Service

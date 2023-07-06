@@ -5,10 +5,12 @@ deploy:
     manifests:
       - ./infra/k8s/*
 build:
-  local:
-    push: false
+  #local:
+    #push: false
+  googleCloudBuild:
+    projectId: noted-robot-231086 
   artifacts:
-    - image: shafi/auth
+    - image: eu.grc.io/noted-robot-231086 /auth
       context: auth
       docker: 
         dockerfile: Dockerfile
