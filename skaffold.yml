@@ -10,7 +10,7 @@ build:
   googleCloudBuild:
     projectId: noted-robot-231086 
   artifacts:
-    - image: eu.grc.io/noted-robot-231086 /auth
+    - image: eu.grc.io/noted-robot-231086/auth
       context: auth
       docker: 
         dockerfile: Dockerfile
