@@ -17,6 +17,7 @@ interface UserDoc{
    save(): unknown;
    email:string,
    password:string,
+   id:string
 }
 const userSchema=new mongoose.Schema({
    email:{
@@ -38,6 +39,7 @@ const userSchema=new mongoose.Schema({
    timestamps:true
 });
 
+//hashing pass before saving it:
 userSchema.pre('save',async function(next){
    if(this.isModified('password')){
       const hashed=await Password.toHash(this.get('password'));
@@ -47,6 +49,7 @@ userSchema.pre('save',async function(next){
    next();
 })
 
+//build function to add users to collecction
 userSchema.statics.build=(attrs:UserAttrs)=>{
    return new User(attrs);
 }
