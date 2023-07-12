@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
-import { RequestValidationError} from '../errors/request-validation-error';
+import { body } from 'express-validator';
 import { User } from '../models/user';
 import jwt from 'jsonwebtoken';
+import { validateRequest } from '../middlewares/validate-request';
 const router = express.Router();
 import { BadRequestError } from '../errors/bad-request-error';
 
@@ -16,40 +16,36 @@ router.post('/api/users/signup', [
       .isLength({ max: 20, min: 4 })
       .isString()
       .withMessage('password should be at least between 4 and 20 characters')
-], async (req: Request, res: Response) => {
-   //checking error
-   const errors=validationResult(req);
-   //returning error in case there is
-   if(!errors.isEmpty()){
-      throw new RequestValidationError(errors.array());
-   }
+],
+   validateRequest,
+   async (req: Request, res: Response) => {
 
-   const {email,password}=req.body;
-   //checking if email is in user:
-   const existingUser=await User.findOne({email});
-   if(existingUser){
-      throw new BadRequestError('Email already exists');
-   }
+      const { email, password } = req.body;
+      //checking if email is in user:
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+         throw new BadRequestError('Email already exists');
+      }
 
-   //save user:
-   const user=User.build({email,password});
-   await user.save();
-   
-   //creating jwt
-   const userJwt=jwt.sign({
-      id:user.id,
-      email:user.email
-   },
-      process.env.JWT_KEY!
-   );
+      //save user:
+      const user = User.build({ email, password });
+      await user.save();
 
-   //storing session cookie
-   req.session={
-      jwt:userJwt
-   }
+      //creating jwt
+      const userJwt = jwt.sign({
+         id: user.id,
+         email: user.email
+      },
+         process.env.JWT_KEY!
+      );
 
-   res.status(201).send(user);
+      //storing session cookie
+      req.session = {
+         jwt: userJwt
+      }
 
-})
+      res.status(201).send(user);
+
+   })
 
 export { router as signUpRouter }
