@@ -31,9 +31,10 @@ const userSchema=new mongoose.Schema({
 },{
    toJSON:{
       transform(doc,ret){
+         ret.id=ret._id;
+         delete ret._id;
          delete ret.password;
-         delete ret.salt;
-         delete ret.__v
+         delete ret.__v;
       }
    },
    timestamps:true
