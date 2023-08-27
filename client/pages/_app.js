@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css';
 import buildClient from '../api/build-client';
+import Header from '../components/header';
 
 //im passing as props to the app an object with>
 /*
@@ -18,7 +19,7 @@ import buildClient from '../api/build-client';
 const AppComponent = ({ Component, pageProps, currentUser }) => {
    return (
       <>
-         {/*<Header/>*/}
+         <Header currentUser={currentUser}/>
          <Component
             {...pageProps}
          />
