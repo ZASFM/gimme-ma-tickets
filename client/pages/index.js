@@ -3,7 +3,9 @@ import  buildClient from '../api/build-client';
 const page = ({ currentUser }) => {
    return (
       <div>
-         Landing page
+         {
+            currentUser?<div>You are in</div>:<div>Unauthorized</div>
+         }
       </div>
    )
 }
