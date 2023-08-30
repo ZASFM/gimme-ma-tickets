@@ -26,5 +26,13 @@ build:
         manual:
          - src: '**/*.js'
            dest: .
+    - image: eu.grc.io/noted-robot-231086/tickets
+      context: tickets
+      docker: 
+        dockerfile: Dockerfile
+      sync:
+        manual:
+         - src: 'src/**/*.ts'
+           dest: .
 
 
