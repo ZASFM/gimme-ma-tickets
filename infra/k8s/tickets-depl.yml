@@ -15,7 +15,9 @@ spec:
       containers: 
         - name: auth
           image: shafi/tickets
-          env: 
+          env:
+            - name: MONGO_URI
+              value: 'mongodb://tickets-mongo-srv:27017/tickets'
             - name: JWT_SECRET
               valueFrom: 
                 secretKeyRef:

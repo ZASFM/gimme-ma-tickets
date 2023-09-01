@@ -34,6 +34,7 @@ function signing() {
    throw new Error("Function not implemented.");
 }
 
+//this global sign in is now gonna wie inside the tickets pod
 global.signin = async () => {
    const email = 'test@test.com';
    const password = '123456789';
