@@ -2,10 +2,11 @@ import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { app } from "../app";
 import request from 'supertest';
+import jwt from 'jsonwebtoken';
 
 //adding signin function to global interface
 declare global {
-   var signin: () => Promise<string[]>;
+   var signing: () => string[];
 }
 
 let mongo: any;
@@ -34,20 +35,21 @@ function signing() {
    throw new Error("Function not implemented.");
 }
 
-//this global sign in is now gonna wie inside the tickets pod
-global.signin = async () => {
-   const email = 'test@test.com';
-   const password = '123456789';
-
-   const response = await request(app).
-      post('/api/users/signup').
-      send({
-         email,
-         password
-      }).
-      expect(201);
-
-   const cookie = response.get('Set-Cookie');
-
-   return cookie;
+//this signin isgonna serve to create a jwt and use it for signin for tests
+global.signing =  () => {
+   //create jwt payload: {name:'',email:''}
+   const payload = {
+      id: '123456789',
+      email: 'email@email.com'
+   }
+   //create a jwt
+   const token = jwt.sign(payload, process.env.JWT_KEY!);
+   //build session obj: {jwt: 'MY_JWT'}
+   const session = { jwt: token }
+   //Turn that session into json
+   const tokenJSON = JSON.stringify(session);
+   //Take json and turn it into base64
+   const base64 = Buffer.from(tokenJSON).toString('base64');
+   //return string, supertest want an array of string as cookie, so im gonna send mzz cookie in an array
+   return [`session=${base64}`];
 }

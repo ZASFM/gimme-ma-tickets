@@ -1,31 +1,81 @@
 import request from 'supertest';
-import {app} from '../../app';
+import { app } from '../../app';
 
 //testing routes indeed is accessible, since it does not triggers my catch all route handler which throws  a404
-it('it has a route handler listening to /api/tickets to  post requests',async()=>{
-   const response=await request(app). 
-      post('/api/tickets'). 
+it('it has a route handler listening to /api/tickets to  post requests', async () => {
+   const response = await request(app).
+      post('/api/tickets').
       send({});
 
    expect(response.status).not.toEqual(404);
 });
 
-it('it can ony be access if user is logged in',async()=>{
+it('it can ony be access if user is logged in', async () => {
    //this is gonna trigger mz notAuthorized error which throws a 401
-   await request(app). 
-      post('/api/tickets'). 
-      send({}). 
+   await request(app).
+      post('/api/tickets').
+      send({}).
       expect(401)
 });
 
-//if user is authenticated is should not return a 401
-it('returns anything but 401 if user is signed in',async()=>{
-   const response=await request(app). 
-   post('/api/tickets'). 
-   send({});
+//if user is authenticated is should not return a 401, passing cookie from global.signing
+it('returns anything but 401 if user is signed in', async () => {
+   const response = await request(app).
+      post('/api/tickets').
+      set('Cookie', global.signing()).
+      send({});
 
-expect(response.status).not.toEqual(401);
+   expect(response.status).not.toEqual(401);
 });
-it('returns error if invalid title is provided',async()=>{});
-it('returns error if invalid price is provided',async()=>{});
-it('creates a ticket with valid data',async()=>{});
+
+//should throw an error if title is invalid
+it('returns error if invalid title is provided', async () => {
+   await request(app).
+      post('/api/tickets').
+      set('Cookie', global.signing()).
+      send({
+         title: '',
+         price: 123
+      }).
+      expect(400);
+
+   await request(app).
+      post('/api/tickets').
+      set('Cookie', global.signing()).
+      send({
+         price: 123
+      }).
+      expect(400);
+});
+
+//should throw an error if price has wrong format
+it('returns error if invalid price is provided', async () => {
+   await request(app).
+      post('/api/tickets').
+      set('Cookie', global.signing()).
+      send({
+         title: 'title',
+         price: ''
+      }).
+      expect(400);
+
+   await request(app).
+      post('/api/tickets').
+      set('Cookie', global.signing()).
+      send({
+         title: 'title',
+      }).
+      expect(400);
+});
+
+//create a ticket
+it('creates a ticket with valid data', async () => {
+   //add in one check to see something was saved in the database
+   await request(app). 
+      post('/api/tickets'). 
+      send({
+         title:'title',
+         price:123
+      }). 
+      expect(201);
+ });
