@@ -1,5 +1,6 @@
 import request from 'supertest';
 import { app } from '../../app';
+import { Ticket } from '../../models/ticket';
 
 //testing routes indeed is accessible, since it does not triggers my catch all route handler which throws  a404
 it('it has a route handler listening to /api/tickets to  post requests', async () => {
@@ -71,11 +72,21 @@ it('returns error if invalid price is provided', async () => {
 //create a ticket
 it('creates a ticket with valid data', async () => {
    //add in one check to see something was saved in the database
+   //before anz test i erase the database, so its length should be 0
+   let tickets=await Ticket.find({});
+   expect(tickets.length).toEqual(0);
    await request(app). 
       post('/api/tickets'). 
+      set('Cookie',global.signing()).
       send({
          title:'title',
          price:123
       }). 
       expect(201);
+
+      //after making a ticket it should be saved in the db
+      tickets=await Ticket.find({});
+      expect(tickets.length).toEqual(1);
+      expect(tickets[0].price).toEqual(20);
+      expect(tickets[0].title).toEqual('title');
  });
