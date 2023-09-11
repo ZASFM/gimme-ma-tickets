@@ -9,7 +9,7 @@ it('returns 404 if ticket is not found',async()=>{
       expect(404);
 })
 
-it('returns the ticket if ticket is not found',async()=>{
+it('returns the ticket if ticket is found',async()=>{
    //we have to make sure there is a ticket inside the db, so we create one
    const title='title';
    const price=20
