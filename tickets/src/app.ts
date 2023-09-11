@@ -5,6 +5,7 @@ import cookieSession from "cookie-session";
 import { createTicketRouter } from "./routes/new";
 import { TicketRouter } from "./routes/show";
 import { indexRouter } from "./routes";
+import { UpdateTicket } from "./routes/update";
 
 const app=express();
 app.set('trust proxy',true);
@@ -22,6 +23,8 @@ app.use(createTicketRouter);
 app.use(TicketRouter);
 //get all tickets
 app.use(indexRouter);
+//update a ticket
+app.use(UpdateTicket);
 //not found error
 app.get('*',async(req,res,next)=>{
     next(new NotFound());
