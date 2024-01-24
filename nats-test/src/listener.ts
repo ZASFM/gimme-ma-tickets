@@ -8,6 +8,12 @@ const stan = nats.connect("ticketing",randomBytes(4).toString(),{
 stan.on("connect",()=>{
    console.log("Listener connected to Nats"); 
 
+   //when listener is killed, exit process, so NATS, removes the lister from channel
+   stan.on("close",()=>{
+      console.log("Nats exiting");
+      process.exit();
+   })
+
    //config:
    const options = stan.subscriptionOptions(). 
      //setting manual acknowledgment of the events
@@ -28,5 +34,7 @@ stan.on("connect",()=>{
          msg.ack();
       }      
    })
-})
+});
 
+stan.on("SIGINT",()=>stan.close());
+stan.on("SIGTERM",()=>{stan.close()});
