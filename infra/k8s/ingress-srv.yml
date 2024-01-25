@@ -23,7 +23,7 @@ spec:
                  number: 3000
           - path: /?(.*)
             backend:
-              service:
+              service: 
                 name: client-srv
                 port:
                   number: 3000

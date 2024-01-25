@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         app: tickets-mongo
-    spec:
+    spec: 
       containers:
         - name: tickets-mongo
           image: mongo
