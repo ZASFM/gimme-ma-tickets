@@ -20,13 +20,15 @@ stan.on("connect",()=>{
      //setting manual acknowledgment of the events
      setManualAckMode(true).
      //this is how we get all the event in the past
-     setDeliverAllAvailable();
+     setDeliverAllAvailable().
+     //adding listener-srv as id, so instead of getting al previous events, i only get those with listener-srv
+     setDurableName("listener-srv");
 
    const subscription=stan.subscribe(
       //name of the channel im susbcribing to:
       "tickets:created",
       //name of the queue im subscribing to:
-      // for setDeliverAllAvailable we need to disactive the queue "orderServiceQueueGroup",
+      "orderServiceQueueGroup",
       //options:
       options
    );
