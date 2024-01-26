@@ -15,15 +15,18 @@ stan.on("connect",()=>{
    })
 
    //config:
-   const options = stan.subscriptionOptions(). 
+   const options = stan.
+     subscriptionOptions(). 
      //setting manual acknowledgment of the events
-     setManualAckMode(true);
+     setManualAckMode(true).
+     //this is how we get all the event in the past
+     setDeliverAllAvailable();
 
    const subscription=stan.subscribe(
       //name of the channel im susbcribing to:
       "tickets:created",
       //name of the queue im subscribing to:
-      "orderServiceQueueGroup",
+      // for setDeliverAllAvailable we need to disactive the queue "orderServiceQueueGroup",
       //options:
       options
    );
