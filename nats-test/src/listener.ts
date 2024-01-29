@@ -1,4 +1,4 @@
-import nats, { Message } from "node-nats-streaming";
+import nats, { Message, Stan } from "node-nats-streaming";
 import { randomBytes } from "crypto";
 
 const stan = nats.connect("ticketing",randomBytes(4).toString(),{
@@ -43,3 +43,50 @@ stan.on("connect",()=>{
 
 stan.on("SIGINT",()=>stan.close());
 stan.on("SIGTERM",()=>{stan.close()});
+
+abstract class Listener{
+   private client:Stan;
+   abstract subject:string;
+   abstract queueName: string;
+   protected ackWait= 5*1000;
+   abstract onMessage:(data:any, message:Message)=>void;
+
+   constructor(client:Stan){
+      this.client=client;
+   }
+
+   subscriptionOptions(){
+      return this.client.
+         subscriptionOptions().
+         setDeliverAllAvailable(). 
+         setManualAckMode(true). 
+         setAckWait(this.ackWait). 
+         setDurableName(this.queueName);
+   }
+
+   listen(){
+      const subscription=this.client.subscribe(
+         this.subject,
+         this.queueName,
+         this.subscriptionOptions()
+      )
+
+      subscription.on("message",(msg:Message)=>{
+         console.log(`Msg recieved: ${this.subject}/${this.queueName}`);
+
+         const parsedData=this.parseMessage(msg);
+         this.onMessage(parsedData,msg);
+      })
+   }
+
+   parseMessage(msg:Message){
+      const data=msg.getData();
+      return typeof data==="string"?
+      //in case data is a string
+      JSON.parse(data):
+      //in case data is a buffer
+      JSON.parse(data.toString("utf8"))
+   }
+
+
+}
