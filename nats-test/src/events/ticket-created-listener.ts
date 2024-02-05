@@ -4,9 +4,9 @@ import { TicketCreatedEvent } from "./ticketCreatedEvent";
 import { Subjects } from "./subjects";
 
 export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
-   subject:Subjects.TicketCreated = Subjects.TicketCreated;
+   readonly subject:Subjects.TicketCreated = Subjects.TicketCreated;
    queueName = "payments-service";
-   onMessage(data: any, msg: Message) {
+   onMessage(data: TicketCreatedEvent["data"], msg: Message) {
      msg.ack();
    }
  }
