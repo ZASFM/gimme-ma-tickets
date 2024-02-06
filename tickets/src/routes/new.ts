@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { requireAuth, validateRequest } from '@zasfmy/commontick';
 import { body } from 'express-validator';
 import { Ticket } from '../models/ticket';
+import { TicketCreatedPublisher } from '../events/publishers/ticket-created-publisher';}
 const router = express.Router();
 
 //requireAuth middleware checks req has a currentUser prop that points to a decoded JWT token
@@ -26,6 +27,13 @@ router.post(
          userId:req.currentUser!.id
       });
       await ticket.save();
+      //submitting/publishing an event to nats
+      new TicketCreatedPublisher(client).publish({
+         id:ticket.id,
+         title:ticket.title,
+         price:ticket.price,
+         userId:ticket.userId
+      });
       res.status(201).send(ticket);
    }
 )
