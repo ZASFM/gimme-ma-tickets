@@ -7,6 +7,8 @@ import {
    notAuthorized
 } from '@zasfmy/commontick';
 import { Ticket } from '../models/ticket';
+import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
+import { natsWrapper } from '../../nats-wrapper';
 const router=express.Router();
 
 router.put(
@@ -40,7 +42,13 @@ router.put(
       })
       //this is gonna actually persist the data in the mongoDB
       await ticket.save();
-
+      //upon update publish an updated event
+      new TicketUpdatedPublisher(natsWrapper.client).publish({
+         id:ticket.id,
+         title:ticket.title,
+         price:ticket.price,
+         userId:ticket.userId
+      })
       res.send(ticket);
    }
 )
