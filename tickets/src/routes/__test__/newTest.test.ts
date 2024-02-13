@@ -2,6 +2,9 @@ import request from 'supertest';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
 
+//mocking nats client from __mocks__
+jest.mock('../../nats-wrapper');
+
 //testing routes indeed is accessible, since it does not triggers my catch all route handler which throws  a404
 it('it has a route handler listening to /api/tickets to  post requests', async () => {
    const response = await request(app).
