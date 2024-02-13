@@ -9,6 +9,8 @@ declare global {
    var signing: () => string[];
 }
 
+jest.mock("../nats-wrapper")
+
 let mongo: any;
 beforeAll(async () => {
    process.env.JWT_SECRET = '123';
@@ -18,6 +20,10 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
+
+   //clear all mock, since between each test, it records th times it get called and args passed
+   jest.clearAllMocks();
+
    const collections = await mongoose.connection.db.collections();
    for (let collection of collections) {
       await collection.deleteMany({});
