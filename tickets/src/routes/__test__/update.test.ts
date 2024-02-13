@@ -2,6 +2,9 @@ import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
 
+//mocking nats client from __mocks__
+jest.mock('../../nats-wrapper');
+
 it('returns 404 if provided id does not exist', async () => {
    //creating mongo id
    const id = new mongoose.Types.ObjectId().toHexString();
