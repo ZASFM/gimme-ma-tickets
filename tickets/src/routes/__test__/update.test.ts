@@ -1,9 +1,10 @@
 import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
+import { natsWrapper } from '../../../nats-wrapper';
+import { response } from 'express';
 
-//mocking nats client from __mocks__
-jest.mock('../../nats-wrapper');
+//mocking already at test setup.ts
 
 it('returns 404 if provided id does not exist', async () => {
    //creating mongo id
@@ -112,4 +113,29 @@ it('returns and updates ticket', async () => {
 
    expect(ticketResponse.body.title).toEqual('title updated');
    expect(ticketResponse.body.price).toEqual(123);
-})
+});
+
+it("publishes an event",async()=>{
+
+   const cookie=global.signing();
+
+   const response = await request(app).
+      post('/api/tickets'). 
+      set('Cookie',cookie). 
+      send({
+         title:"",
+         price:20
+      }). 
+      expect(201);
+   
+   await request(app). 
+      put(`/api/tickets/${response.body.id}`).
+      set('Cookie',cookie). 
+      send({
+         title:"Abc",
+         price:525
+      }). 
+      expect(200);
+         
+   expect(natsWrapper.client.publish).toHaveBeenCalled();
+});

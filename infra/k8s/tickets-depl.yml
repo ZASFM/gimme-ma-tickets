@@ -16,6 +16,14 @@ spec:
         - name: auth
           image: shafi/tickets
           env:
+            - name: NATS_URL
+              value: "http://nats-src:4222"
+            - name: NATS_CLUSTER_ID
+              value: ticketing
+            - name: NATS_CLIENT
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: MONGO_URI
               value: 'mongodb://tickets-mongo-srv:27017/tickets'
             - name: JWT_SECRET
