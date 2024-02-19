@@ -20,7 +20,7 @@ spec:
               value: "http://nats-src:4222"
             - name: NATS_CLUSTER_ID
               value: ticketing
-            - name: NATS_CLIENT
+            - name: NATS_CLIENT_ID
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
