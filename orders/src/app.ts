@@ -2,10 +2,10 @@ import express from "express";
 import {json} from 'body-parser';
 import { NotFound, currentUser } from "@zasfmy/commontick";
 import cookieSession from "cookie-session";
-import { createTicketRouter } from "./routes/new";
-import { TicketRouter } from "./routes/show";
-import { indexRouter } from "./routes";
-import { UpdateTicket } from "./routes/update";
+import { newOrderRouter } from "./routes/new";
+import { showOrderRouter } from "./routes/show";
+import { indexOrderRouter } from "./routes";
+import { deleteOrderRouter } from "./routes/delete";
 
 const app=express();
 app.set('trust proxy',true);
@@ -17,14 +17,14 @@ app.use(cookieSession({
 
 //checking that users are logged in
 app.use(currentUser);
-//post req, created ticket
-app.use(createTicketRouter);
-//show and get a defined ticket
-app.use(TicketRouter);
-//get all tickets
-app.use(indexRouter);
-//update a ticket
-app.use(UpdateTicket);
+//get all my active orders
+app.use(indexOrderRouter);
+//get a specific order bt :orderId
+app.use(showOrderRouter);
+//make an order to purchase a ticket
+app.use(newOrderRouter);
+//delete your order
+app.use(deleteOrderRouter);
 //not found error
 app.get('*',async(req,res,next)=>{
     next(new NotFound());
