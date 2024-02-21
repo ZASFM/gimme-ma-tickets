@@ -3,7 +3,7 @@ import { requireAuth, validateRequest } from '@zasfmy/commontick';
 import { body } from 'express-validator';
 import { Ticket } from '../models/ticket';
 import { TicketCreatedPublisher } from '../events/publishers/ticket-created-publisher';
-import { natsWrapper } from '../../nats-wrapper';
+import { natsWrapper } from '../nats-wrapper';
 const router = express.Router();
 
 //requireAuth middleware checks req has a currentUser prop that points to a decoded JWT token

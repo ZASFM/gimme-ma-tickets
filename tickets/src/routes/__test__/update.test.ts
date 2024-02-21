@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { app } from '../../app';
 import mongoose from 'mongoose';
-import { natsWrapper } from '../../../nats-wrapper';
+import { natsWrapper } from '../../nats-wrapper';
 import { response } from 'express';
 
 //mocking already at test setup.ts
