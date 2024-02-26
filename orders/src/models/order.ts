@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { OrderStatus } from "@zasfmy/commontick/build/events/types/order-status";
+import { TicketDoc } from "./ticket";
 
 interface OrderAttrs {
   userId: string;
