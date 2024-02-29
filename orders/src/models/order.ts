@@ -2,9 +2,6 @@ import mongoose from "mongoose";
 import { OrderStatus } from "@zasfmy/commontick/build/events/types/order-status";
 import { TicketDoc } from "./ticket";
 
-//just to make sure Order and orderStatus get imported inside nay file from the same file
-export default OrderStatus;
-
 interface OrderAttrs {
   userId: string;
   status: OrderStatus;
@@ -59,4 +56,9 @@ orderSchema.statics.build = (attrs: OrderAttrs) => {
 
 const Order = mongoose.model<OrderDoc, OrderModel>("Order", orderSchema);
 
-export { Order };
+export { 
+  Order, 
+
+  //just to make sure Order and orderStatus get imported inside nay file from the same file
+  OrderStatus 
+};
