@@ -10,6 +10,8 @@ import mongoose from "mongoose";
 import { Ticket } from "../models/ticket";
 import { Order } from "../models/order";
 import { OrderStatus } from "@zasfmy/commontick/build/events/types/order-status";
+import { OrderCreatedPublisher } from "../events/publishers/order-created-publsiher";
+import { natsWrapper } from "../nats-wrapper";
 
 const router = express.Router();
 //15 minutes is the max time a user can reserve a purchase a ticket
@@ -31,27 +33,19 @@ router.post(
   async (req: Request, res: Response) => {
     const { ticketId } = req.body;
 
-
-
     //find the ticketId inside Tickets collection that comes from body
     const ticket = await Ticket.findById(ticketId);
     if (!ticket) throw new NotFound();
 
-
-
     //making sure that ticket we are reserving is not reserved
     const isReserved = await ticket.isReserved();
     if (isReserved) throw new BadRequestError("Ticket is already reserved");
-
-
 
     //calculate an expiration date for user to purchase ticket
     const expiration = new Date();
     //setting expiation to the current date + 15 minutes
     expiration.setSeconds(expiration.getSeconds() + expirationWindowSecond);
 
-
-    
     //build the order and save to db:
     const order = new Order({
       userId: req.currentUser!.id,
@@ -62,6 +56,18 @@ router.post(
     await order.save();
 
     //publish an event that it was created
+    new OrderCreatedPublisher(natsWrapper.client).publish({
+      id: order.id,
+      status: order.status,
+      userId: order.userId,
+      //RETURN: string with a UTC format
+      expiresAt: order.expiresAt.toISOString(),
+      ticket: {
+        id: ticket.id,
+        price: ticket.price,
+      },
+    });
+
     res.status(201).send(order);
   }
 );
