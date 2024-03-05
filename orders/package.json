@@ -24,7 +24,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/mongoose": "^5.11.97",
     "@types/supertest": "^2.0.12",
-    "@zasfmy/commontick": "^1.0.1",
+    "@zasfmy/commontick": "^1.0.4",
     "body-parser": "^1.20.2",
     "cookie-session": "^2.1.0",
     "dotenv": "^16.3.1",
