@@ -15,3 +15,5 @@ export * from './events/base-publisher';
 export * from './events/subjects';
 export * from './events/ticketCreatedEvent';
 export * from './events/ticketUpdatedEvent';
+export * from './events/order-cancelled-event';
+export * from './events/order-created-event';
